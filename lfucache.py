@@ -3,7 +3,7 @@ class LFUCache:
     def __init__(self, capacity: int):
         self.capacity = capacity
         self.cache = {}
-        self.use_counter = {}
+        self.use_counter = {1: []}
 
 
     def get(self, key: int) -> int:
@@ -20,12 +20,8 @@ class LFUCache:
             if len(self.cache) >= self.capacity:
                 to_evict = self.use_counter[self._least_used_count()].pop()
                 del self.cache[to_evict]
-
             self.cache[key] = {'value': value, 'uses': 1}
-            if 1 not in self.use_counter:
-                self.use_counter[1] = []
-            self.use_counter[1].append(key)
-
+            self.use_counter[1].insert(0, key)
         else:
             self.cache[key]['value'] = value
             self.cache[key]['uses'] += 1
@@ -60,3 +56,21 @@ def test_lfu_cache():
     assert cache.get(1) == 1
     assert cache.get(4) == 4
     
+def test_cache_case_2():
+    cache = LFUCache(3)
+    cache.put(1,1)
+    cache.put(2,2)
+    cache.put(3,3)
+    cache.put(4,4)
+    #import pdb; pdb.set_trace()
+    assert cache.get(4) == 4
+    
+    assert cache.get(3) == 3 # incorrectly -1
+    assert cache.get(2) == 2
+    assert cache.get(1) == -1
+    cache.put(5,5)
+    assert cache.get(1) == -1
+    assert cache.get(2) == 2
+    assert cache.get(3) == 3
+    assert cache.get(4) == -1
+    assert cache.get(5) == 5
