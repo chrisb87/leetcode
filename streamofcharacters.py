@@ -8,25 +8,15 @@ class StreamChecker:
         for word in words:
             self.words_trie.insert(word)
 
-    def query(self, letter: str, verbose: bool = False) -> bool:
-
-        if verbose:
-            print(f"query {letter}")
-
+    def query(self, letter: str) -> bool:
         self.stream += letter
         if len(self.stream) > self.max_word_len:
             self.stream = self.stream[0 - self.max_word_len:]
 
-        if verbose:
-            print(f"stream is {self.stream}")
-
         for word_len in range(self.max_word_len):
             suffix = self.stream[-1 - word_len:]
-
-            if verbose:
-                print(f"suffix {suffix}")
             
-            if self.words_trie.search(suffix, verbose):
+            if self.words_trie.search(suffix):
                 return True
 
         return False
@@ -51,31 +41,21 @@ class TrieNode:
         else:
             self.children[character_index].insert(word[1:])
 
-    def search(self, word: str, verbose: bool = False) -> bool:
-        if verbose:
-            print(f"search {word}")
-            if word == "baa":
-                #import pdb; pdb.set_trace()
-                pass
-
+    def search(self, word: str) -> bool:
         character = word[0]
         character_index = self.character_to_index[character]
 
         if self.children[character_index] == None:
-            print("char not in trie, False")
             return False
         
         if self.children[character_index].isEndOfWord and len(word) == 1:
             if len(word) == 1:
-                print("isEndOfWord, and len 1, so True")
                 return True
             
         if len(word) == 1:
-            print("simple len 1 false")
             return False
         else:
-            print("recurse!")
-            return self.children[character_index].search(word[1:], verbose)
+            return self.children[character_index].search(word[1:])
 
 
 
@@ -120,7 +100,7 @@ def test_case_2():
     assert streamChecker.query("a") == True
     assert streamChecker.query("b") == True
     assert streamChecker.query("a") == True
-    assert streamChecker.query("a", True) == True
+    assert streamChecker.query("a") == True
     assert streamChecker.query("a") == False
     assert streamChecker.query("b") == True
     assert streamChecker.query("a") == True
