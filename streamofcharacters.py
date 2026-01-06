@@ -2,58 +2,48 @@ from typing import List
 
 class StreamChecker:
     def __init__(self, words: List[str]):
-        self.max_word_len = max([len(word) for word in words])
         self.stream = ""
-        self.words_trie = TrieNode()
+        self.trie = TrieNode()
         for word in words:
-            self.words_trie.insert(word)
+            self.trie.insert(word)
 
     def query(self, letter: str) -> bool:
         self.stream += letter
-        if len(self.stream) > self.max_word_len:
-            self.stream = self.stream[0 - self.max_word_len:]
 
-        for word_len in range(self.max_word_len):
-            suffix = self.stream[-1 - word_len:]
-            
-            if TrieNode.search(suffix, self.words_trie):
+        current_node = self.trie
+        for character in reversed(self.stream):
+            if character not in current_node.children:
+                return False
+            if current_node.children[character].start_of_word:
                 return True
+            current_node = current_node.children[character]
 
         return False
 
 
 class TrieNode:
-    character_to_index = {c: i for i, c in enumerate("abcdefghijklmnopqrstuvwxyz")}
-
     def __init__(self):
-        self.children = [None] * len(self.character_to_index)
-        self.isEndOfWord = False
+        self.children = {}
+        self.start_of_word = False
 
     def insert(self, word: str):
-        character = word[0]
-        character_index = self.character_to_index[character]
-
-        if self.children[character_index] == None:
-            self.children[character_index] = TrieNode()
-
+        character, rest_of_word = word[-1], word[:-1]
+        
+        if character not in self.children:
+            self.children[character] = TrieNode()
+        
         if len(word) == 1:
-            self.children[character_index].isEndOfWord = True
+            self.children[character].start_of_word = True
         else:
-            self.children[character_index].insert(word[1:])
+            self.children[character].insert(rest_of_word)
 
     @classmethod
-    def search(cls, word: str, start_node) -> bool:
+    def contains_suffix(cls, start_node, stream) -> bool:
         current_node = start_node
+        current_character = stream[-1]
 
-        for character in word:
-            character_index = cls.character_to_index[character]
-
-            if current_node.children[character_index] == None:
-                return False
-            
-            current_node = current_node.children[character_index]
-        
-        return current_node.isEndOfWord
+        if current_character not in current_node.children:
+            return False
 
 
 
