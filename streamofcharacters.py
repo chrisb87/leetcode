@@ -37,15 +37,6 @@ class TrieNode:
         else:
             self.children[character].insert(rest_of_word)
 
-    @classmethod
-    def contains_suffix(cls, start_node, stream) -> bool:
-        current_node = start_node
-        current_character = stream[-1]
-
-        if current_character not in current_node.children:
-            return False
-
-
 
 def test_example_1():
     streamChecker = StreamChecker(["cd", "f", "kl"])
