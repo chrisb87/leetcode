@@ -3,6 +3,8 @@ def fib(n: int):
         return 0
     if n == 1:
         return 1
+    
+    print(f"n = {n}")
 
     return fib(n - 2) + fib (n - 1)
 
