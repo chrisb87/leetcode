@@ -2,7 +2,38 @@ from typing import List
 
 
 def sortedSquares(nums: List[int]) -> List[int]:
-    return sorted([n * n for n in nums])
+    ans = []
+
+    i = 0
+    while i < len(nums):
+        if nums[i] >= 0:
+            break
+        i += 1
+
+    j = i + 1
+
+    while i >= 0 and j < len(nums):
+        i_squared = nums[i] * nums[i]
+        j_squared = nums[j] * nums[j]
+
+        if i_squared < j_squared:
+            ans.append(i_squared)
+            i -= 1
+        else:
+            ans.append(j_squared)
+            j += 1
+
+    while i >= 0:
+        i_squared = nums[i] * nums[i]
+        ans.append(i_squared)
+        i -= 1
+
+    while j < len(nums):
+        j_squared = nums[j] * nums[j]
+        ans.append(j_squared)
+        j += 1
+
+    return ans
     
 
 
