@@ -1,18 +1,39 @@
 import bisect
+from typing import List
 
 class SummaryRanges:
 
     def __init__(self):
-        pass
+        self.nums = []
 
     def addNum(self, value: int) -> None:
-        pass
+        bisect.insort(self.nums, value)
 
     def getIntervals(self) -> List[List[int]]:
-        pass
+        intervals = []
+
+        if len(self.nums) == 0:
+            return intervals
+
+        current_interval_left = self.nums[0]
+        current_interval_right = self.nums[0]
+
+        for num in self.nums:
+            if num == current_interval_right:
+                continue
+            elif num - 1 == current_interval_right:
+                current_interval_right = num
+            else:
+                intervals.append([current_interval_left, current_interval_right])
+                current_interval_left = num
+                current_interval_right = num
+
+        intervals.append([current_interval_left, current_interval_right])
+
+        return intervals
 
 
-class test_example_1():
+def test_example_1():
     summaryRanges = SummaryRanges()
     summaryRanges.addNum(1)
     assert summaryRanges.getIntervals() == [[1, 1]]
