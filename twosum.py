@@ -3,7 +3,12 @@ from typing import List
 
 class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
-        return [0,0]
+        seen = {}
+        for i, num in enumerate(nums):
+            pair = target - num
+            if pair in seen:
+                return [seen[pair], i]
+            seen[num] = i
 
 
 def test_example_1():
