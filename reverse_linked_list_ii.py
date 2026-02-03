@@ -41,27 +41,36 @@ class ListNode:
 
 class Solution:
     def reverseBetween(self, head: Optional[ListNode], left: int, right: int) -> Optional[ListNode]:
-        start = head
-        curr = head
-        curr_index = 0
         prev = None
+        curr = head
+        dummy_head = ListNode()
+        end_of_beginning = dummy_head
+        dummy_head.next = curr
+        i = 1
 
-        while curr and curr_index < 100:
-            curr_index += 1
-            next_node = curr.next
-            
-            #print(f"while, curr_index={curr_index} curr={curr}, prev={prev}, next_node={next_node}")
-
-            if curr_index >= left and curr_index <= right:
-                #print("between left and right, reversing")
-                curr.next = prev
-            else:
-                curr.next = next_node
+        while curr and i < left:
             
             prev = curr
-            curr = next_node
+            end_of_beginning = curr
+            curr = curr.next
+            i += 1
 
-        return start
+        if not curr:
+            return dummy_head.next
+
+        end_of_reversed_section = curr
+
+        while curr and i <= right:
+            next_node = curr.next
+            curr.next = prev
+            prev = curr
+            curr = next_node
+            i += 1
+
+        beginning_of_reversed_section = prev
+        end_of_beginning.next = beginning_of_reversed_section
+        end_of_reversed_section.next = curr
+        return dummy_head.next
 
 
 def test_example_1():
@@ -83,6 +92,30 @@ def test_example_2():
 def test_simple_reverse():
     list = ListNode.from_list([1,2,3,4,5])
     left = 1
-    right = 1
+    right = 5
     expected = ListNode.from_list([5,4,3,2,1])
+    assert Solution().reverseBetween(list, left, right) == expected
+
+
+def test_failure_1():
+    list = ListNode.from_list([3,5])
+    left = 1
+    right = 1
+    expected = ListNode.from_list([3,5])
+    assert Solution().reverseBetween(list, left, right) == expected
+
+
+def test_failure_2():
+    list = ListNode.from_list([3,5])
+    left = 2
+    right = 2
+    expected = ListNode.from_list([3,5])
+    assert Solution().reverseBetween(list, left, right) == expected
+
+
+def test_failure_3():
+    list = ListNode.from_list([1,2,3])
+    left = 3
+    right = 3
+    expected = ListNode.from_list([1,2,3])
     assert Solution().reverseBetween(list, left, right) == expected
