@@ -23,25 +23,33 @@ class Solution:
         stack = ['/']
 
         for c in path:
-            stack.append(c)
+            stack = self.appendToStack(stack, c)
 
-            if stack[-2:] == ['/', '/']:
-                stack.pop()
-            elif stack[-4:] == ['/', '.', '.', '/']:
-                for _ in range(4):
-                    stack.pop()
-                while stack and stack[-1] != '/':
-                    stack.pop()
-                if not stack:
-                    stack = ['/']
-            elif stack[-3:] == ['/', '.', '/']:
-                for _ in range(2):
-                    stack.pop()
+        if len(stack) > 1 and stack[-1] != '/':
+            stack = self.appendToStack(stack, '/')
 
         if len(stack) > 1 and stack[-1] == '/':
             stack.pop()
 
         return ''.join(stack)
+
+    def appendToStack(self, stack, c):
+        stack.append(c)
+
+        if stack[-2:] == ['/', '/']:
+            stack.pop()
+        elif stack[-4:] == ['/', '.', '.', '/']:
+            for _ in range(4):
+                stack.pop()
+            while stack and stack[-1] != '/':
+                stack.pop()
+            if not stack:
+                stack = ['/']
+        elif stack[-3:] == ['/', '.', '/']:
+            for _ in range(2):
+                stack.pop()
+
+        return stack
 
 
 def test_example_1():
@@ -67,4 +75,9 @@ def test_example_4():
 def test_example_5():
     path = "/.../a/../b/c/../d/./"
     expected = "/.../b/d"
+    assert Solution().simplifyPath(path) == expected
+
+def test_failure_1():
+    path = "/a//b////c/d//././/.."
+    expected = "/a/b/c"
     assert Solution().simplifyPath(path) == expected
