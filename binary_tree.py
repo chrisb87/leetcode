@@ -38,21 +38,21 @@ class TreeNode:
         self.right = right
 
     def __repr__(self):
-        def build_lines(node, level=0, prefix="root: "):
+        def build_lines(node, level=0, prefix=""):
             if not node:
                 return []
             
             lines = []
+            prefix = f"{prefix}{" " * len(str(node.val))}"
 
             # right appears above
-            lines.extend(build_lines(node.right, level + 1, "/-- "))
+            lines.extend(build_lines(node.right, level + 1, f"{" " * len(prefix)} /-- "))
 
             # current node in the middle
-            indent = "    " * level
-            lines.append(f"{indent}{prefix}{node.val}")
+            lines.append(f"{prefix}{node.val}")
 
             # left appears below
-            lines.extend(build_lines(node.left, level + 1, "\\-- "))
+            lines.extend(build_lines(node.left, level + 1, f"{" " * len(prefix)} \\-- "))
 
             return lines
         
