@@ -1,19 +1,20 @@
 from collections import deque
 from typing import Optional
 
+
 class TreeNode:
     @classmethod
     def build(cls, nodes: Optional[list] = None):
         if not nodes or nodes[0] == None:
             return None
-        
+
         root = TreeNode(nodes[0])
         queue = deque([root])
 
         i = 1
         while queue and i < len(nodes):
             current = queue.popleft()
-            
+
             # left
             if nodes[i] is not None:
                 current.left = TreeNode(nodes[i])
@@ -29,7 +30,7 @@ class TreeNode:
                 queue.append(current.right)
 
             i += 1
-        
+
         return root
 
     def __init__(self, val=0, left=None, right=None):
@@ -38,25 +39,21 @@ class TreeNode:
         self.right = right
 
     def __repr__(self):
-        def build_lines(node, level=0, prefix=""):
+        def build_lines(node, prefix="", is_left=True):
             if not node:
                 return []
-            
+
             lines = []
-            prefix = f"{prefix}{" " * len(str(node.val))}"
-
-            # right appears above
-            lines.extend(build_lines(node.right, level + 1, f"{" " * len(prefix)} /-- "))
-
-            # current node in the middle
-            lines.append(f"{prefix}{node.val}")
-
-            # left appears below
-            lines.extend(build_lines(node.left, level + 1, f"{" " * len(prefix)} \\-- "))
-
+            lines.extend(build_lines(node.right, prefix +
+                         ("│   " if is_left else "    "), False))
+            lines.append(
+                prefix + ("└── " if is_left else "┌── ") + str(node.val))
+            lines.extend(build_lines(node.left, prefix +
+                         ("    " if is_left else "│   "), True))
             return lines
-        
+
         return "\n" + "\n".join(build_lines(self)) + "\n"
+
 
 if __name__ == "__main__":
     input_data = [3, 9, 20, None, None, 15, 7]
