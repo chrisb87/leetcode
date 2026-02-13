@@ -4,7 +4,14 @@ from .binary_tree import TreeNode
 
 class Solution:
     def minDepth(self, root: Optional[TreeNode]) -> int:
-        return 0
+        if root is None:
+            return 0
+        elif root.left is None:
+            return 1 + self.minDepth(root.right)
+        elif root.right is None:
+            return 1 + self.minDepth(root.left)
+        else:
+            return 1 + min(self.minDepth(root.right), self.minDepth(root.left))
 
 
 def test_example_1():
