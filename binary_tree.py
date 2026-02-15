@@ -54,8 +54,30 @@ class TreeNode:
 
         return "\n" + "\n".join(build_lines(self)) + "\n"
 
+    def __iter__(self):
+        return TreeIterator(self)
+
+
+class TreeIterator:
+    def __init__(self, root):
+        self.queue = deque([root])
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if not self.queue:
+            raise StopIteration()
+        node = self.queue.popleft()
+        if node.left:
+            self.queue.append(node.left)
+        if node.right:
+            self.queue.append(node.right)
+        return node.val
+
 
 if __name__ == "__main__":
     input_data = [3, 9, 20, None, None, 15, 7]
     root = TreeNode.build(input_data)
     print(root)
+    print([v for v in root])
