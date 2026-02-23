@@ -3,16 +3,19 @@ from typing import List
 
 
 class Solution:
-    BASES = ('A', 'C', 'G', 'T')
+    def isSingleMutation(self, curr: str, mutation: str):
+        mutations = 0
 
-    def mutations(self, gene: str):
-        for i in range(len(gene)):
-            for base in self.BASES:
-                if gene[i] == base:
-                    continue
-                yield gene[:i] + base + gene[i+1:]
+        for i in range(len(curr)):
+            if curr[i] != mutation[i]:
+                mutations += 1
+                if mutations > 1:
+                    return False
+
+        return mutations == 1
 
     def minMutation(self, startGene: str, endGene: str, bank: List[str]) -> int:
+        bank_remaining = set(bank)
         queue = deque([startGene])
         mutations = -1
 
@@ -20,14 +23,19 @@ class Solution:
             this_level = len(queue)
             mutations += 1
             for _ in range(this_level):
-                gene = queue.popleft()
+                curr = queue.popleft()
 
-                if gene == endGene:
+                if curr == endGene:
                     return mutations
 
-                for mutation in self.mutations(gene):
-                    if mutation in bank:
+                mutations_to_remove = []
+                for mutation in bank_remaining:
+                    if self.isSingleMutation(curr, mutation):
+                        mutations_to_remove.append(mutation)
                         queue.append(mutation)
+
+                for mutation in mutations_to_remove:
+                    bank_remaining.remove(mutation)
 
         return -1
 
