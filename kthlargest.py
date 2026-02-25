@@ -1,17 +1,20 @@
+from heapq import heappush, heappop
 from typing import List
-import bisect
+
 
 class KthLargest:
 
     def __init__(self, k: int, nums: List[int]):
         self.k = k
-        self.nums = sorted(nums)[0 - self.k:]
+        self.heap = []
+        for num in nums:
+            self.add(num)
 
     def add(self, val: int) -> int:
-        if len(self.nums) < self.k or val >= self.nums[0]:
-            bisect.insort(self.nums, val)
-            self.nums = self.nums[0 - self.k:]
-        return self.nums[0]
+        heappush(self.heap, val)
+        if len(self.heap) > self.k:
+            heappop(self.heap)
+        return self.heap[0]
 
 
 def test_example_1():
@@ -21,6 +24,7 @@ def test_example_1():
     assert kthlargest.add(10) == 5
     assert kthlargest.add(9) == 8
     assert kthlargest.add(4) == 8
+
 
 def test_example_2():
     kthlargest = KthLargest(4, [7, 7, 7, 7, 8, 3])
