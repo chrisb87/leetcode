@@ -2,24 +2,33 @@ from typing import List
 
 
 class Solution:
+    def answerWithPsum(self, psum: List[int], query: int):
+        left = 0
+        right = len(psum) - 1
+        while left <= right:
+            mid = (left + right) // 2
+            if psum[mid] == query:
+                return mid + 1
+            elif psum[mid] < query:
+                left = mid + 1
+            elif psum[mid] > query:
+                right = mid - 1
+        return left
+
     def answerQueries(self, nums: List[int], queries: List[int]) -> List[int]:
-        nums.sort()
-        answer = []
+        psum = []
+        for num in sorted(nums):
+            if len(psum) == 0:
+                psum.append(num)
+            else:
+                psum.append(num + psum[-1])
+
+        answers = []
 
         for query in queries:
-            sum = 0
-            count = 0
+            answers.append(self.answerWithPsum(psum, query))
 
-            for num in nums:
-                sum += num
-                count += 1
-                if sum > query:
-                    count -= 1
-                    break
-
-            answer.append(count)
-
-        return answer
+        return answers
 
 
 def test_example_1():
