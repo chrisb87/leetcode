@@ -3,26 +3,24 @@ from typing import List
 
 class Solution:
     def combinationSum3(self, k: int, n: int) -> List[List[int]]:
-        def recurse(path: List[int]):
-            print(f"recurse with path {path}")
-
-            if len(path) == k:
-                print(f"\tlen is k")
-                if sum(path) == n:
-                    print(f"\t\tsum is n")
-                    ans.append(path[:])
+        def recurse(combo: list[int]):
+            if len(combo) == k:
+                if sum(combo) == n:
+                    ans.append(combo[:])
                 return
 
-            for i in range(1, 10):
-                if i not in path:
-                    path.append(i)
-                    if sum(path) <= n:
-                        recurse(path)
-                    path.pop()
+            next_start = 1
+            if len(combo) > 0:
+                next_start = combo[-1] + 1
+
+            for i in range(next_start, 10):
+                combo.append(i)
+                if sum(combo) <= n:
+                    recurse(combo)
+                combo.pop()
 
         ans = []
-        for i in range(1, 10):
-            recurse([i])
+        recurse([])
         return ans
 
 
@@ -37,6 +35,8 @@ def test_example_2():
     k = 3
     n = 9
     answer = [[1, 2, 6], [1, 3, 5], [2, 3, 4]]
+    # import pdb; pdb.set_trace()
+    print(sorted(Solution().combinationSum3(k, n)))
     assert sorted(Solution().combinationSum3(k, n)) == sorted(answer)
 
 
