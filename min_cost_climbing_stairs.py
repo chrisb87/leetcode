@@ -3,6 +3,17 @@ from typing import List
 
 class Solution:
     def minCostClimbingStairs(self, cost: List[int]) -> int:
+        min_costs = [0 for _ in range(len(cost) + 1)]
+        for i in range(2, len(cost) + 1):
+            min_costs[i] = min(
+                min_costs[i-2] + cost[i-2],
+                min_costs[i-1] + cost[i-1],
+            )
+        return min_costs[-1]
+
+
+class Solution2:
+    def minCostClimbingStairs(self, cost: List[int]) -> int:
         def recurse_min_cost(i):
             if i not in memo:
                 memo[i] = min(recurse_min_cost(i - 1) + cost[i-1],
